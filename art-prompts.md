@@ -14,7 +14,7 @@ Status: ✅ = sample made (small preview in the site; full-size file is in Canva
 |---|---|---|---|
 | 00 | दोहा — श्रीगुरु चरन सरोज रज | ✅ | A Guru's two feet resting on a blooming golden lotus, fine glowing dust rising from them, a small polished hand mirror beside the lotus catching the light. |
 | 01 | दोहा — बुद्धिहीन तनु जानिके | ✅ | A humble devotee kneeling with folded hands, looking up at a radiant vision of Lord Hanuman appearing in the sky above, wind swirling gently around. |
-| 02 | 1 — जय हनुमान ज्ञान गुन सागर | ✅ (wide) | Lord Hanuman seated in meditation with folded hands, serene face, golden crown and mace beside him, a halo of gold light behind him. |
+| 02 | 1 — जय हनुमान ज्ञान गुन सागर | ✅ | Lord Hanuman seated in meditation with folded hands, serene face, golden crown and mace beside him, a halo of gold light behind him. |
 | 03 | 2 — राम दूत अतुलित बल धामा | ✅ | Mother Anjani lovingly holding the infant Hanuman in her arms, the wind god shown as soft swirling golden wind blessing them. |
 | 04 | 3 — महाबीर बिक्रम बजरंगी | ✅ | Mighty Lord Hanuman standing heroic and strong, mace resting on his shoulder, lightning in the dark sky behind him. |
 | 05 | 4 — कंचन बरन बिराज सुबेसा | ✅ | Close serene portrait of Lord Hanuman with golden-hued skin, ornate gold earrings, curly hair and a jewelled crown, beautifully adorned. |
@@ -24,14 +24,14 @@ Status: ✅ = sample made (small preview in the site; full-size file is in Canva
 | 09 | 8 — प्रभु चरित्र सुनिबे को रसिया | ✅ | Lord Hanuman reverently revealing Lord Ram, Sita and Lakshman glowing within his heart. |
 | 10 | 9 — सूक्ष्म रूप धरि सियहिं दिखावा | ✅ | A tiny Hanuman bowing with folded hands before Mother Sita seated beneath the Ashoka tree at night, and far behind them the golden city of Lanka glowing with flames. |
 | 11 | 10 — भीम रूप धरि असुर सँहारे | ✅ | Lord Hanuman in a gigantic mighty form towering over a night battlefield, mace raised, dark shadowy demons fleeing before him, no blood. |
-| 12 | 11 — लाय सजीवन लखन जियाये | ✅ (wide) | Lord Hanuman flying through a starry night sky carrying the Dronagiri mountain of glowing sanjivani herbs on one raised palm, mace in the other hand. |
+| 12 | 11 — लाय सजीवन लखन जियाये | ✅ | Lord Hanuman flying through a starry night sky carrying the Dronagiri mountain of glowing sanjivani herbs on one raised palm, mace in the other hand. |
 | 13 | 12 — रघुपति कीन्ही बहुत बड़ाई | ✅ | Lord Ram lovingly embracing Lord Hanuman, both with gentle joyful faces, a forest at dusk behind them. |
 | 14 | 13 — सहस बदन तुम्हरो जस गावैं | ✅ | Lord Ram drawing Lord Hanuman into an embrace, and rising behind them in the glow the great thousand-hooded serpent Sheshanaga. |
 | 15 | 14 — सनकादिक ब्रह्मादि मुनीसा | ✅ | Ancient sages, Lord Brahma, sage Narada with his veena and Goddess Saraswati gathered among golden clouds in the heavens, singing praise together. |
 | 16 | 15 — जम कुबेर दिगपाल जहाँ ते | ✅ | Celestial guardians of the directions, with Yama and Kubera among them, bowing in a starry cosmos toward a single radiant golden light at the centre. |
 | 17 | 16 — तुम उपकार सुग्रीवहिं कीन्हा | ✅ | Lord Hanuman introducing the vanara king Sugriva to Lord Ram and Lakshman on a forested hill, hands joined in friendship. |
 | 18 | 17 — तुम्हरो मंत्र बिभीषन माना | ✅ | The coronation of the noble Vibhishana as king in the golden palace of Lanka, Lord Hanuman standing beside him with folded hands. |
-| 19 | 18 — जुग सहस्र जोजन पर भानू | ✅ (wide) | The child Hanuman leaping through the dawn sky towards a huge glowing rising sun, reaching for it as if it were a ripe fruit. |
+| 19 | 18 — जुग सहस्र जोजन पर भानू | ✅ | The child Hanuman leaping through the dawn sky towards a huge glowing rising sun, reaching for it as if it were a ripe fruit. |
 | 20 | 19 — प्रभु मुद्रिका मेलि मुख माहीं | ✅ | Lord Hanuman leaping in flight across a vast moonlit ocean at night, Lord Ram's golden ring glowing as he carries it, waves far below. |
 | 21 | 20 — दुर्गम काज जगत के जेते | ✅ | A weary pilgrim climbing a steep dark mountain path, and above him the glowing blessing hand of Lord Hanuman lighting the way and making the path easy. |
 | 22 | 21 — राम दुआरे तुम रखवारे | ✅ | Lord Hanuman standing guard with his mace at the grand golden doorway of Lord Ram's palace, warm light pouring out through the door behind him. |

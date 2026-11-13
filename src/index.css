@@ -1112,6 +1112,97 @@ html.is-chant.is-stage {
   color: var(--gold-hi);
 }
 
+/* Menu, tidied: the three actions sit together as one block, and the two
+   settings sit together as a second block underneath. English labels. */
+.bar .menu {
+  gap: 10px;
+  padding: 10px;
+  font-family: var(--lat);
+}
+.menu__group {
+  display: grid;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(233, 192, 121, 0.3);
+  background:
+    linear-gradient(180deg, rgba(255, 226, 170, 0.12), rgba(255, 226, 170, 0.02) 60%),
+    rgba(60, 34, 14, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 236, 200, 0.16);
+}
+.menu .menu__group .menu__item {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0.7rem 0.8rem;
+  font-family: var(--lat);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.menu .menu__group .menu__item + .menu__item {
+  border-top: 1px solid rgba(233, 192, 121, 0.16);
+}
+.menu .menu__group .menu__item:hover,
+.menu .menu__group .menu__item:active {
+  background: rgba(233, 192, 121, 0.12);
+  transform: none;
+}
+.menu .menu__item svg {
+  grid-row: auto;
+  width: 30px;
+  height: 30px;
+  padding: 7px;
+}
+.menu .menu__item span {
+  grid-column: 2;
+}
+.menu .menu__item::after {
+  grid-row: auto;
+}
+.menu__group--set {
+  background: rgba(34, 19, 9, 0.5);
+}
+.menu__group .menu__row {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 0.9rem;
+  padding: 0.6rem 0.8rem;
+  font-family: var(--lat);
+  font-size: 1.12rem;
+  color: var(--gold-hi);
+}
+.menu__group .menu__row + .menu__row {
+  border-top: 1px solid rgba(233, 192, 121, 0.16);
+}
+.menu__group .menu__row p {
+  white-space: nowrap;
+}
+.menu .seg button {
+  font-family: var(--lat);
+  font-size: 1.02rem;
+  min-height: 34px;
+}
+.menu .seg button[lang="hi"] {
+  font-family: var(--dev);
+  font-size: 0.92rem;
+}
+
+/* the notice: small, out of the way of the words, and it never lingers */
+.toast {
+  top: calc(var(--head) + 8px);
+  bottom: auto;
+  font-family: var(--lat);
+  font-size: 1.05rem;
+  line-height: 1.35;
+  padding: 0.55rem 1rem;
+  transform: translate(-50%, -8px);
+}
+.toast.is-on {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
 /* the ‹ › buttons at the ends of the dock */
 .dock__btn--turn {
   width: 40px;

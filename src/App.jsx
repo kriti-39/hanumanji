@@ -12,9 +12,9 @@ import SyncTool from "./components/SyncTool.jsx";
 const SYNC_MODE = new URLSearchParams(window.location.search).has("sync");
 const HAS_ART = Object.keys(ART).length > 0;
 const NOTES = {
-  "no-voice": "इस डिवाइस पर हिंदी आवाज़ उपलब्ध नहीं है — पाठ बिना आवाज़ के चलेगा। · No Hindi voice on this device — the paath will glide silently.",
-  "no-youtube": "YouTube से जुड़ नहीं पाए — डिवाइस की आवाज़ में पाठ होगा। · Could not reach YouTube — using this device's voice instead.",
-  unsynced: "शब्दों का प्रकाश अभी इस रिकॉर्डिंग से जुड़ा नहीं है — स्क्रॉल करते रहें। · The glow is not yet timed to this recording — keep scrolling as you listen.",
+  "no-voice": "No Hindi voice on this device. The verses will turn silently.",
+  "no-youtube": "Could not reach YouTube. Using this device's voice instead.",
+  unsynced: "Video is playing. Swipe to turn the verses as you listen.",
 };
 
 const deva = (num) => num.toLocaleString("hi-IN-u-nu-deva");
@@ -186,7 +186,7 @@ function Chalisa() {
 
   useEffect(() => {
     if (!note) return;
-    const t = setTimeout(() => setNote(""), 7000);
+    const t = setTimeout(() => setNote(""), 5000);
     return () => clearTimeout(t);
   }, [note]);
 
@@ -226,7 +226,7 @@ function Chalisa() {
       </div>
 
       <header className="bar">
-        <button type="button" className="bar__title" onClick={() => readerRef.current && readerRef.current.go(-1)} aria-label="हनुमान चालीसा — शुरुआत पर जाएँ · Back to the start">
+        <button type="button" className="bar__title" onClick={() => readerRef.current && readerRef.current.go(-1)} aria-label="Hanuman Chalisa, back to the start">
           <span lang="hi">॥ हनुमान चालीसा ॥</span>
         </button>
         <p className="bar__where" aria-live="polite">
@@ -234,7 +234,7 @@ function Chalisa() {
         </p>
 
         <div className="bar__menuwrap" ref={menuRef}>
-          <button type="button" className={"bar__menu" + (menu ? " is-on" : "")} onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="true" aria-label="Menu — मेनू" title="Menu">
+          <button type="button" className={"bar__menu" + (menu ? " is-on" : "")} onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="true" aria-label="Menu" title="Menu">
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
               <path className="bar__line bar__line--a" d="M5 9h14" />
               <path className="bar__line bar__line--b" d="M11 15h8" />
@@ -242,75 +242,70 @@ function Chalisa() {
             </svg>
           </button>
           {menu && (
-            <div className="menu">
-              <button
-                type="button"
-                className="menu__item"
-                onClick={() => {
-                  setMenu(false);
-                  toggleRef.current();
-                }}
-              >
-                <Icon fill d={playing ? "M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" : "M8 5.2v13.6a.6.6 0 0 0 .92.5l10.6-6.8a.6.6 0 0 0 0-1L8.92 4.7A.6.6 0 0 0 8 5.2z"} />
-                <span lang="hi">{playing ? "पाठ रोकें" : "पाठ सुनें"}</span>
-                <small>{playing ? "Pause the video" : "Play the YouTube video"}</small>
-              </button>
-
-              <div className="menu__row">
-                <p>
-                  <span lang="hi">अर्थ</span> <small>Meaning</small>
-                </p>
-                <div className="seg" role="group" aria-label="Meaning">
-                  {[
-                    ["off", "बंद", "Hide the meaning"],
-                    ["hi", "हिंदी", "Meaning in Hindi"],
-                    ["en", "English", "Meaning in English"],
-                  ].map(([m, text, label]) => (
-                    <button key={m} type="button" aria-pressed={meaning === m} aria-label={label} onClick={() => setMeaning(m)}>
-                      {text}
-                    </button>
-                  ))}
-                </div>
+            <div className="menu" lang="en">
+              <div className="menu__group">
+                <button
+                  type="button"
+                  className="menu__item"
+                  onClick={() => {
+                    setMenu(false);
+                    toggleRef.current();
+                  }}
+                >
+                  <Icon fill d={playing ? "M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" : "M8 5.2v13.6a.6.6 0 0 0 .92.5l10.6-6.8a.6.6 0 0 0 0-1L8.92 4.7A.6.6 0 0 0 8 5.2z"} />
+                  <span>{playing ? "Pause video" : "Play video"}</span>
+                </button>
+                <button
+                  type="button"
+                  className="menu__item"
+                  onClick={() => {
+                    setMenu(false);
+                    if (playing) toggleRef.current();
+                    setTimeout(() => window.print(), 60);
+                  }}
+                >
+                  <Icon d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14" />
+                  <span>Download PDF</span>
+                </button>
+                <button
+                  type="button"
+                  className="menu__item"
+                  onClick={() => {
+                    setMenu(false);
+                    downloadText(chalisa);
+                  }}
+                >
+                  <Icon d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14" />
+                  <span>Download text</span>
+                </button>
               </div>
 
-              <div className="menu__row">
-                <p>
-                  <span lang="hi">अक्षर</span> <small>Text size</small>
-                </p>
-                <div className="seg" role="group" aria-label="Text size">
-                  {SIZES.map((s, i) => (
-                    <button key={i} type="button" aria-pressed={size === i} aria-label={`Text size ${i + 1} of ${SIZES.length}`} onClick={() => setSize(i)} style={{ fontSize: `${0.85 + i * 0.2}rem` }}>
-                      अ
-                    </button>
-                  ))}
+              <div className="menu__group menu__group--set">
+                <div className="menu__row">
+                  <p>Meaning</p>
+                  <div className="seg" role="group" aria-label="Meaning">
+                    {[
+                      ["off", "Off", "Hide the meaning", "en"],
+                      ["hi", "हिंदी", "Meaning in Hindi", "hi"],
+                      ["en", "English", "Meaning in English", "en"],
+                    ].map(([m, text, label, lang]) => (
+                      <button key={m} type="button" lang={lang} aria-pressed={meaning === m} aria-label={label} onClick={() => setMeaning(m)}>
+                        {text}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="menu__row">
+                  <p>Text size</p>
+                  <div className="seg" role="group" aria-label="Text size">
+                    {SIZES.map((s, i) => (
+                      <button key={i} type="button" aria-pressed={size === i} aria-label={`Text size ${i + 1} of ${SIZES.length}`} onClick={() => setSize(i)} style={{ fontSize: `${0.85 + i * 0.2}rem` }}>
+                        A
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              <button
-                type="button"
-                className="menu__item"
-                onClick={() => {
-                  setMenu(false);
-                  if (playing) toggleRef.current();
-                  setTimeout(() => window.print(), 60);
-                }}
-              >
-                <Icon d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14" />
-                <span lang="hi">PDF डाउनलोड</span>
-                <small>Print or save as PDF</small>
-              </button>
-              <button
-                type="button"
-                className="menu__item"
-                onClick={() => {
-                  setMenu(false);
-                  downloadText(chalisa);
-                }}
-              >
-                <Icon d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14" />
-                <span lang="hi">टेक्स्ट डाउनलोड</span>
-                <small>Plain text file (.txt)</small>
-              </button>
             </div>
           )}
         </div>
@@ -370,7 +365,7 @@ function Chalisa() {
       </main>
 
       <nav className="dock" aria-label="Controls">
-        <button type="button" className="dock__btn dock__btn--turn" onClick={() => readerRef.current && readerRef.current.prev()} aria-label="पिछला — Previous verse" title="Previous (←)">
+        <button type="button" className="dock__btn dock__btn--turn" onClick={() => readerRef.current && readerRef.current.prev()} aria-label="Previous verse" title="Previous (←)">
           <Icon d="M14.5 5.5L8 12l6.5 6.5" />
         </button>
         <button
@@ -378,12 +373,12 @@ function Chalisa() {
           className={"dock__btn dock__btn--play" + (playing ? " is-on" : "")}
           onClick={() => toggleRef.current()}
           aria-pressed={playing}
-          aria-label={playing ? "पाठ रोकें — Pause recitation" : "पाठ सुनें — Listen to the recitation"}
+          aria-label={playing ? "Pause the video" : "Play the video"}
           title={playing ? "Pause (Space)" : "Listen (Space)"}
         >
           <Icon fill d={playing ? "M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" : "M8 5.2v13.6a.6.6 0 0 0 .92.5l10.6-6.8a.6.6 0 0 0 0-1L8.92 4.7A.6.6 0 0 0 8 5.2z"} />
         </button>
-        <button type="button" className="dock__btn dock__btn--turn" onClick={() => readerRef.current && readerRef.current.next()} aria-label="अगला — Next verse" title="Next (→)">
+        <button type="button" className="dock__btn dock__btn--turn" onClick={() => readerRef.current && readerRef.current.next()} aria-label="Next verse" title="Next (→)">
           <Icon d="M9.5 5.5L16 12l-6.5 6.5" />
         </button>
       </nav>
@@ -391,13 +386,13 @@ function Chalisa() {
       <aside className={"chant" + (chantOpen ? " is-open" : "")} aria-label="YouTube recording" aria-hidden={!chantOpen}>
         <div className="chant__frame" ref={chantMount} />
         {chantOpen && (
-          <button type="button" className="chant__close" onClick={closeChant} aria-label="वीडियो बंद करें — Close the video">
+          <button type="button" className="chant__close" onClick={closeChant} aria-label="Close the video">
             ×
           </button>
         )}
       </aside>
 
-      <p className={"toast" + (note ? " is-on" : "")} role="status" aria-live="polite">
+      <p className={"toast" + (note ? " is-on" : "")} role="status" aria-live="polite" onClick={() => setNote("")}>
         {note}
       </p>
     </>

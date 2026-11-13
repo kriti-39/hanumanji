@@ -22,7 +22,7 @@ for (const [path, url] of ordered) {
 
 // Paintings that are wide (16:9) rather than square. They are shown whole,
 // in a wide frame, never cropped.
-export const WIDE = new Set([2, 12, 19]);
+export const WIDE = new Set([]);
 
 // Where the figure sits in WIDE paintings, so tall phone screens crop to it.
 // Square, centred paintings don't need an entry.
