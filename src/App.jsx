@@ -450,10 +450,7 @@ function Chalisa() {
 
               <div className="menu__group menu__group--set">
                 <div className="menu__row menu__row--pace">
-                  <p>
-                    Pace
-                    <small>{version.singer}</small>
-                  </p>
+                  <p>Pace</p>
                   <div className="seg" role="group" aria-label="Pace of the recitation">
                     {VERSIONS.map((v) => (
                       <button key={v.id} type="button" aria-pressed={pace === v.id} aria-label={`${v.label}, sung by ${v.singer}`} onClick={() => choosePace(v.id)}>
