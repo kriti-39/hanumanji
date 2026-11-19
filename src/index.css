@@ -1405,3 +1405,86 @@ html.is-chant.is-stage {
     text-shadow: none;
   }
 }
+
+/* ---------- menu: pace row ---------- */
+.menu__row--pace p {
+  display: grid;
+  line-height: 1.15;
+}
+.menu__row--pace small {
+  font-size: 0.82rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.menu .seg--wrap {
+  flex-wrap: wrap;
+  border-radius: 18px;
+}
+.menu .seg--wrap button {
+  flex: 1 0 30%;
+}
+
+/* ---------- paath counter on the ending screen ---------- */
+.paath {
+  margin-top: 1.4rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  font-family: var(--lat);
+}
+.paath__num {
+  font-size: 2.6rem;
+  line-height: 1;
+  font-weight: 500;
+  color: var(--gold-hi);
+  text-shadow: 0 0 22px rgba(255, 176, 74, 0.35);
+}
+.paath__label {
+  font-size: 1.05rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.paath__bar {
+  width: 9rem;
+  height: 3px;
+  margin-top: 0.3rem;
+  border-radius: 3px;
+  background: rgba(233, 192, 121, 0.16);
+  overflow: hidden;
+}
+.paath__bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--sindoor), var(--gold));
+}
+.paath__reset {
+  margin-top: 0.2rem;
+  font-family: var(--lat);
+  font-size: 0.9rem;
+  color: var(--muted);
+  opacity: 0.7;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.outro__again {
+  font-family: var(--lat);
+  font-size: 1.05rem;
+}
+
+/* ---------- timing tool: choose a recording ---------- */
+.sync__pick {
+  display: grid;
+  gap: 0.8rem;
+  width: min(100%, 22rem);
+}
+.sync__pick .sync__tap {
+  display: grid;
+  gap: 0.2rem;
+  width: 100%;
+}
+.sync__pick small {
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}

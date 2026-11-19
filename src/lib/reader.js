@@ -21,7 +21,7 @@ const REVEAL_DELAY = 480; // wait for the slide to arrive before reading
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
-export function createReader({ root, signals, progressEl, onVerse, onPlaying, onNote, onToggle }) {
+export function createReader({ root, signals, progressEl, onVerse, onPlaying, onNote, onToggle, onSeek }) {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   // every slide in order: the title, the 43 verses, the ending
@@ -140,6 +140,17 @@ export function createReader({ root, signals, progressEl, onVerse, onPlaying, on
 
   // turned by hand — this always wins over autoplay
   function go(k) {
+    k = clamp(k, -1, n);
+    // While a timed recording plays, turning a verse moves the recording
+    // there too, so the two stay together instead of the video stopping.
+    if (P.on && P.follow && onSeek && k >= 0 && k < n) {
+      P.hold = performance.now() + 1200; // let the recording catch up before following it again
+      P.u = k;
+      setIndex(k);
+      paint(k, -1);
+      onSeek(k);
+      return;
+    }
     pause();
     setIndex(k);
   }
@@ -319,7 +330,7 @@ export function createReader({ root, signals, progressEl, onVerse, onPlaying, on
 
     if (P.on) {
       if (P.follow) {
-        const pos = P.follow();
+        const pos = now < (P.hold || 0) ? null : P.follow();
         if (pos && pos.u >= 0) {
           P.u = Math.min(pos.u, n - 1);
           if (idx !== P.u) setIndex(P.u);

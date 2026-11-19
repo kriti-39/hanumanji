@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { createChant } from "../lib/youtube.js";
-import { VIDEO_ID, saveTimings } from "../data/timings.js";
+import { VERSIONS, loadTimings, saveTimings } from "../data/timings.js";
 
 /* ------------------------------------------------------------
    Tap-along timing tool (open the site with ?sync).
 
-   Listen to the recording once and tap (or press Space) at the
-   first word of every doha / chaupai, then once more when the
-   last line ends. The result is saved in this browser straight
-   away, and shown as text to paste into src/data/timings.js so
+   Pick a recording, listen to it once and tap (or press Space)
+   at the first word of every doha / chaupai, then once more when
+   the last line ends. The result is saved in this browser at
+   once, and shown as a line to put into src/data/timings.js so
    every visitor gets it.
    ------------------------------------------------------------ */
 
@@ -17,7 +17,7 @@ const REACTION = 0.2; // seconds — people tap slightly after they hear the wor
 export default function SyncTool({ verses }) {
   const mount = useRef(null);
   const chant = useRef(null);
-  const [started, setStarted] = useState(false);
+  const [version, setVersion] = useState(null);
   const [taps, setTaps] = useState([]);
   const tapRef = useRef(() => {});
 
@@ -27,9 +27,10 @@ export default function SyncTool({ verses }) {
 
   useEffect(() => () => chant.current && chant.current.destroy(), []);
 
-  const start = () => {
-    setStarted(true);
-    chant.current = createChant({ mount: mount.current, videoId: VIDEO_ID, onState: () => {}, onFail: () => alert("Could not load the YouTube video.") });
+  const start = (v) => {
+    setVersion(v);
+    setTaps([]);
+    chant.current = createChant({ mount: mount.current, videoId: v.videoId, onState: () => {}, onFail: () => alert("Could not load the YouTube video.") });
   };
 
   tapRef.current = () => {
@@ -38,7 +39,7 @@ export default function SyncTool({ verses }) {
     const all = [...taps, Math.round(t * 100) / 100];
     setTaps(all);
     if (all.length === total) {
-      saveTimings(all);
+      saveTimings(version.videoId, all);
       chant.current.pause();
     }
   };
@@ -47,7 +48,7 @@ export default function SyncTool({ verses }) {
     if (!taps.length) return;
     const all = taps.slice(0, -1);
     setTaps(all);
-    // jump back to a few seconds before the previous tap so you can redo it
+    // jump back to a second before the previous tap so you can redo it
     if (chant.current) {
       chant.current.seek(Math.max(0, (all[all.length - 1] ?? 0) - 1));
       chant.current.play();
@@ -64,35 +65,45 @@ export default function SyncTool({ verses }) {
     return () => window.removeEventListener("keydown", key);
   }, []);
 
-  const code = `export const TIMINGS = [${taps.join(", ")}];`;
+  const code = version ? `${version.id}: [${taps.join(", ")}]` : "";
 
   return (
-    <main className="sync">
-      <h1>Timing tool · ताल मिलाएँ</h1>
-      <p className="sync__help" lang="en">
-        Play the recording and tap the big button (or press Space) at the <b>first word</b> of each doha / chaupai. After the last verse, tap once more when the singing of it ends. It takes one
-        listen, about ten minutes.
+    <main className="sync" lang="en">
+      <h1>Timing tool</h1>
+      <p className="sync__help">
+        Choose a recording and play it. Tap the big button (or press Space) at the <b>first word</b> of each doha and chaupai. After the last verse, tap once more when its singing ends. One
+        listen per recording.
       </p>
 
-      <div className="sync__video" ref={mount} />
-
-      {!started && (
-        <button type="button" className="sync__tap" onClick={start}>
-          Start the recording
-        </button>
+      {!version && (
+        <div className="sync__pick">
+          {VERSIONS.map((v) => (
+            <button key={v.id} type="button" className="sync__tap" onClick={() => start(v)}>
+              {v.label}
+              <small>
+                {v.singer}
+                {loadTimings(v) ? " · already timed" : ""}
+              </small>
+            </button>
+          ))}
+        </div>
       )}
 
-      {started && !done && (
+      <div className="sync__video" ref={mount} hidden={!version} />
+
+      {version && !done && (
         <>
           <p className="sync__count">
-            {next + 1} / {total}
+            {version.label} · {next + 1} / {total}
           </p>
-          <div className="sync__verse" lang="hi">
+          <div className="sync__verse">
             {next < verses.length ? (
               <>
                 <p className="sync__label">{verses[next].label} — tap when this begins:</p>
                 {verses[next].dev.map((l, i) => (
-                  <p key={i}>{l}</p>
+                  <p key={i} lang="hi">
+                    {l}
+                  </p>
                 ))}
               </>
             ) : (
@@ -109,18 +120,18 @@ export default function SyncTool({ verses }) {
       )}
 
       {done && (
-        <div className="sync__done" lang="en">
+        <div className="sync__done">
           <p>
-            <b>Done — saved in this browser.</b> Open the site normally and press play to see the words follow the singing. To make it work for every visitor, paste this line into{" "}
-            <code>src/data/timings.js</code> in place of <code>export const TIMINGS = null;</code>
+            <b>Done — saved in this browser.</b> Open the site and choose the <b>{version.label}</b> pace: the verses now turn with the singing. To make it work for every visitor, copy the line below
+            and send it to Claude (or put it into <code>src/data/timings.js</code> yourself).
           </p>
           <textarea readOnly value={code} rows={5} onFocus={(e) => e.target.select()} />
           <p>
             <button type="button" className="sync__undo" onClick={() => navigator.clipboard && navigator.clipboard.writeText(code)}>
               Copy
             </button>{" "}
-            <button type="button" className="sync__undo" onClick={() => setTaps([])}>
-              Start over
+            <button type="button" className="sync__undo" onClick={() => window.location.reload()}>
+              Time another recording
             </button>{" "}
             <a href={window.location.pathname}>Open the site</a>
           </p>
