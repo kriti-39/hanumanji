@@ -141,6 +141,8 @@ function Chalisa() {
     return Number.isInteger(c) && c >= 0 ? c : 0;
   });
   const [menu, setMenu] = useState(false);
+  const [paceOpen, setPaceOpen] = useState(false);
+  const dockRef = useRef(null);
   const [note, setNote] = useState("");
   const [installEvt, setInstallEvt] = useState(null);
   const [installed, setInstalled] = useState(isStandalone);
@@ -310,14 +312,21 @@ function Chalisa() {
     }
   };
 
-  // choosing another pace while the video is open switches to that recording
-  const choosePace = (id) => {
-    if (id === pace) return;
+  // Play: while playing it pauses; otherwise it offers the three paces first
+  const pressPlay = () => {
+    if (playing) toggleRef.current();
+    else setPaceOpen((o) => !o);
+  };
+  // a pace was chosen: play that recording (or carry on with it)
+  const startWith = (id) => {
+    setPaceOpen(false);
     save("hc-pace", id);
-    if (chantRef.current) {
-      reopenRef.current = playing;
-      closeChant();
+    if (id === pace) {
+      toggleRef.current();
+      return;
     }
+    if (chantRef.current) closeChant();
+    reopenRef.current = true; // starts once the new pace is in place
     setPace(id);
   };
   useEffect(() => {
@@ -342,6 +351,20 @@ function Chalisa() {
     const t = setTimeout(() => setNote(""), 5000);
     return () => clearTimeout(t);
   }, [note]);
+
+  useEffect(() => {
+    if (!paceOpen) return;
+    const out = (e) => {
+      if (dockRef.current && !dockRef.current.contains(e.target)) setPaceOpen(false);
+    };
+    const esc = (e) => e.key === "Escape" && setPaceOpen(false);
+    window.addEventListener("pointerdown", out);
+    window.addEventListener("keydown", esc);
+    return () => {
+      window.removeEventListener("pointerdown", out);
+      window.removeEventListener("keydown", esc);
+    };
+  }, [paceOpen]);
 
   // close the menu on outside click / Escape
   useEffect(() => {
@@ -398,86 +421,64 @@ function Chalisa() {
           </button>
           {menu && (
             <div className="menu" lang="en">
-              <div className="menu__group">
+              {canInstall && (
                 <button
                   type="button"
-                  className="menu__item"
+                  className="mrow mrow--btn"
                   onClick={() => {
                     setMenu(false);
-                    toggleRef.current();
+                    install();
                   }}
                 >
-                  <Icon fill d={playing ? PAUSE : PLAY} />
-                  <span>{playing ? "Pause video" : "Play video"}</span>
+                  <Icon d={INSTALL} />
+                  <span>Install app</span>
                 </button>
-                {canInstall && (
+              )}
+              <div className="mrow">
+                <span className="mrow__label">Download</span>
+                <div className="mpills">
                   <button
                     type="button"
-                    className="menu__item"
+                    aria-label="Download as PDF"
                     onClick={() => {
                       setMenu(false);
-                      install();
+                      if (playing) toggleRef.current();
+                      setTimeout(() => window.print(), 60);
                     }}
                   >
-                    <Icon d={INSTALL} />
-                    <span>Install app</span>
+                    PDF
                   </button>
-                )}
-                <button
-                  type="button"
-                  className="menu__item"
-                  onClick={() => {
-                    setMenu(false);
-                    if (playing) toggleRef.current();
-                    setTimeout(() => window.print(), 60);
-                  }}
-                >
-                  <Icon d={DOWN} />
-                  <span>Download PDF</span>
-                </button>
-                <button
-                  type="button"
-                  className="menu__item"
-                  onClick={() => {
-                    setMenu(false);
-                    downloadText(chalisa);
-                  }}
-                >
-                  <Icon d={DOWN} />
-                  <span>Download text</span>
-                </button>
+                  <button
+                    type="button"
+                    aria-label="Download as a text file"
+                    onClick={() => {
+                      setMenu(false);
+                      downloadText(chalisa);
+                    }}
+                  >
+                    Text
+                  </button>
+                </div>
               </div>
-
-              <div className="menu__group menu__group--set">
-                <div className="menu__row menu__row--pace">
-                  <p>Pace</p>
-                  <div className="seg" role="group" aria-label="Pace of the recitation">
-                    {VERSIONS.map((v) => (
-                      <button key={v.id} type="button" aria-pressed={pace === v.id} aria-label={`${v.label}, sung by ${v.singer}`} onClick={() => choosePace(v.id)}>
-                        {v.label}
-                      </button>
-                    ))}
-                  </div>
+              <div className="mrow mrow--col">
+                <span className="mrow__label">Meaning</span>
+                <div className={"seg" + (MEANINGS.length > 3 ? " seg--wrap" : "")} role="group" aria-label="Meaning">
+                  {MEANINGS.map(([m, text, label, lang]) => (
+                    <button key={m} type="button" lang={lang} aria-pressed={meaning === m} aria-label={label} onClick={() => setMeaning(m)}>
+                      {text}
+                    </button>
+                  ))}
                 </div>
-                <div className="menu__row">
-                  <p>Meaning</p>
-                  <div className={"seg" + (MEANINGS.length > 3 ? " seg--wrap" : "")} role="group" aria-label="Meaning">
-                    {MEANINGS.map(([m, text, label, lang]) => (
-                      <button key={m} type="button" lang={lang} aria-pressed={meaning === m} aria-label={label} onClick={() => setMeaning(m)}>
-                        {text}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="menu__row">
-                  <p>Text size</p>
-                  <div className="seg" role="group" aria-label="Text size">
-                    {SIZES.map((s, i) => (
-                      <button key={i} type="button" aria-pressed={size === i} aria-label={`Text size ${i + 1} of ${SIZES.length}`} onClick={() => setSize(i)} style={{ fontSize: `${0.85 + i * 0.2}rem` }}>
-                        A
-                      </button>
-                    ))}
-                  </div>
+                <p className="mrow__note">More languages coming soon</p>
+              </div>
+              <div className="mrow mrow--col">
+                <span className="mrow__label">Text size</span>
+                <div className="seg" role="group" aria-label="Text size">
+                  {SIZES.map((sz, i) => (
+                    <button key={i} type="button" aria-pressed={size === i} aria-label={`Text size ${i + 1} of ${SIZES.length}`} onClick={() => setSize(i)} style={{ fontSize: `${0.85 + i * 0.18}rem` }}>
+                      A
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -560,15 +561,28 @@ function Chalisa() {
         </footer>
       </main>
 
-      <nav className="dock" aria-label="Controls">
+      <nav className="dock" aria-label="Controls" ref={dockRef}>
+        {paceOpen && (
+          <div className="pace" role="dialog" aria-label="Choose a pace" lang="en">
+            <p className="pace__title">Choose a pace</p>
+            <div className="seg" role="group" aria-label="Pace">
+              {VERSIONS.map((v) => (
+                <button key={v.id} type="button" aria-pressed={pace === v.id} aria-label={`${v.label} recitation`} onClick={() => startWith(v.id)}>
+                  {v.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <button type="button" className="dock__btn dock__btn--turn" onClick={() => readerRef.current && readerRef.current.prev()} aria-label="Previous verse" title="Previous (←)">
           <Icon d="M14.5 5.5L8 12l6.5 6.5" />
         </button>
         <button
           type="button"
           className={"dock__btn dock__btn--play" + (playing ? " is-on" : "")}
-          onClick={() => toggleRef.current()}
+          onClick={pressPlay}
           aria-pressed={playing}
+          aria-expanded={playing ? undefined : paceOpen}
           aria-label={playing ? "Pause the video" : "Play the video"}
           title={playing ? "Pause (Space)" : "Listen (Space)"}
         >

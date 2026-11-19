@@ -1,39 +1,38 @@
 # Meanings in more languages
 
-Each file here holds the meaning of every verse in one language. A language
-appears in the site's menu (under **Meaning**) only when its file is complete
-**and** marked as checked.
+The site shows the meaning in Hindi and English. More languages appear under
+**Meaning** in the menu as soon as a checked translation is added.
 
-Files ready for translators: `ta.json` (Tamil), `te.json` (Telugu), `bn.json` (Bengali).
-To add another language, copy one of them, rename it with the language code
-(for example `mr.json` for Marathi) and change `code`, `label` and `name`.
+## 1. Send a spreadsheet to a translator
 
-## For the translator
+Ready-made sheets are in the `translations/` folder at the top of the project:
 
-Each verse looks like this:
+| File | Language |
+|---|---|
+| `bn.csv` | Bengali · বাংলা |
+| `ta.csv` | Tamil · தமிழ் |
+| `te.csv` | Telugu · తెలుగు |
+| `kn.csv` | Kannada · ಕನ್ನಡ |
+| `pa.csv` | Punjabi · ਪੰਜਾਬੀ |
 
-```json
-{
-  "ref": "Chaupai 1",
-  "verse": "जय हनुमान ज्ञान गुन सागर। / जय कपीस तिहुँ लोक उजागर॥",
-  "hindi_meaning": "…",
-  "english_meaning": "…",
-  "text": ""
-}
+Each opens in Excel or Google Sheets. Every row is one verse, with the verse,
+its Hindi meaning and its English meaning. The translator fills only the last
+column, **translation**, and must not add, remove or reorder rows.
+
+## 2. Have it checked
+
+Someone who knows the language well, and the Chalisa, reads every meaning.
+
+## 3. Add it to the site
+
+Save the filled sheet back into `translations/` with the same name, then run:
+
+```bash
+npm run translations:import -- translations/ta.csv "Name of the person who checked it"
 ```
 
-Write the meaning in your language inside `"text": ""`. Do not change the
-other fields. Please translate from the Hindi meaning, using the English one
-only as a help.
+This writes `src/data/meanings/ta.json`. The language shows on the site only
+when every verse is filled **and** a checker's name is given; otherwise it
+stays hidden. Then commit and push as usual.
 
-## Before it goes live
-
-Someone who knows the language well, and the Chalisa, should read every
-meaning. Then set:
-
-```json
-"verified": true,
-"checked_by": "Name of the person who checked it"
-```
-
-Until `verified` is `true`, the language stays hidden, even if every verse is filled in.
+To make sheets again (existing ones are kept): `npm run translations:sheets`
