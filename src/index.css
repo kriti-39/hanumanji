@@ -1488,3 +1488,43 @@ html.is-chant.is-stage {
   font-weight: 500;
   letter-spacing: 0.02em;
 }
+
+/* ---------- menu fit on narrow phones ----------
+   Each setting's name sits on its own line, with its choices across the
+   full width underneath, so nothing runs off the right edge. */
+.menu__group .menu__row {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 0.45rem;
+  padding: 0.65rem 0.75rem 0.7rem;
+}
+.menu__row p,
+.menu__row--pace p {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+}
+.menu__row--pace small {
+  font-size: 0.88rem;
+}
+.menu .seg {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.menu .seg button {
+  min-width: 0;
+  padding: 0 0.3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.menu .menu__group .menu__item {
+  font-size: 1.1rem;
+  padding: 0.6rem 0.75rem;
+}
+.bar .menu {
+  max-height: calc(100dvh - var(--head) - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
