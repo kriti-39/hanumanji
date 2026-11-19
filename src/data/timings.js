@@ -22,8 +22,8 @@ export const VERSIONS = [
   {
     id: "medium",
     label: "Medium",
-    singer: "Rasraj Ji Maharaj",
-    videoId: "eFLQYQLb0gg", // Rasraj Ji Maharaj · 5:38
+    singer: "Rasraj Ji Maharaj (lo-fi)",
+    videoId: "N86zFLRGHVE", // Rasraj Ji Maharaj Official, lo-fi version · 3:52
     timings: null,
   },
   {

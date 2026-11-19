@@ -97,6 +97,21 @@ const PAUSE = "M7 5h3.5v14H7zM13.5 5H17v14h-3.5z";
 const DOWN = "M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14";
 const INSTALL = "M8 3.5h8a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5H8A1.5 1.5 0 0 1 6.5 19V5A1.5 1.5 0 0 1 8 3.5zM12 8v6m0 0l-2.5-2.5M12 14l2.5-2.5M10.5 17.5h3";
 
+/* A sliding switch: a gold thumb glides to the chosen option. */
+function Switch({ label, options, value, onChange }) {
+  const i = Math.max(0, options.findIndex((o) => o.value === value));
+  return (
+    <div className="seg2" role="radiogroup" aria-label={label} style={{ "--n": options.length, "--i": i }}>
+      <span className="seg2__thumb" aria-hidden="true" />
+      {options.map((o) => (
+        <button key={o.value} type="button" role="radio" aria-checked={o.value === value} aria-label={o.aria} lang={o.lang} style={o.style} onClick={() => onChange(o.value)}>
+          {o.text}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   return SYNC_MODE ? <SyncTool verses={VERSES} /> : <Chalisa />;
 }
@@ -421,65 +436,68 @@ function Chalisa() {
           </button>
           {menu && (
             <div className="menu" lang="en">
-              {canInstall && (
+              <div className="mtiles">
+                {canInstall && (
+                  <button
+                    type="button"
+                    className="mtile mtile--wide"
+                    onClick={() => {
+                      setMenu(false);
+                      install();
+                    }}
+                  >
+                    <Icon d={INSTALL} />
+                    <span>
+                      <b>Install app</b>
+                      <small>Opens from your home screen, works offline</small>
+                    </span>
+                  </button>
+                )}
                 <button
                   type="button"
-                  className="mrow mrow--btn"
+                  className="mtile"
                   onClick={() => {
                     setMenu(false);
-                    install();
+                    if (playing) toggleRef.current();
+                    setTimeout(() => window.print(), 60);
                   }}
                 >
-                  <Icon d={INSTALL} />
-                  <span>Install app</span>
+                  <Icon d={DOWN} />
+                  <span>
+                    <b>PDF</b>
+                    <small>Print or save</small>
+                  </span>
                 </button>
-              )}
-              <div className="mrow">
-                <span className="mrow__label">Download</span>
-                <div className="mpills">
-                  <button
-                    type="button"
-                    aria-label="Download as PDF"
-                    onClick={() => {
-                      setMenu(false);
-                      if (playing) toggleRef.current();
-                      setTimeout(() => window.print(), 60);
-                    }}
-                  >
-                    PDF
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Download as a text file"
-                    onClick={() => {
-                      setMenu(false);
-                      downloadText(chalisa);
-                    }}
-                  >
-                    Text
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className="mtile"
+                  onClick={() => {
+                    setMenu(false);
+                    downloadText(chalisa);
+                  }}
+                >
+                  <Icon d={DOWN} />
+                  <span>
+                    <b>Text</b>
+                    <small>Plain .txt file</small>
+                  </span>
+                </button>
               </div>
-              <div className="mrow mrow--col">
-                <span className="mrow__label">Meaning</span>
-                <div className={"seg" + (MEANINGS.length > 3 ? " seg--wrap" : "")} role="group" aria-label="Meaning">
-                  {MEANINGS.map(([m, text, label, lang]) => (
-                    <button key={m} type="button" lang={lang} aria-pressed={meaning === m} aria-label={label} onClick={() => setMeaning(m)}>
-                      {text}
-                    </button>
-                  ))}
-                </div>
-                <p className="mrow__note">More languages coming soon</p>
+
+              <div className="mset">
+                <span className="mset__label">Meaning</span>
+                <Switch label="Meaning" value={meaning} onChange={setMeaning} options={MEANINGS.map(([m, text, aria, lang]) => ({ value: m, text, aria, lang }))} />
+                <span className="mset__note">More languages coming soon</span>
               </div>
-              <div className="mrow mrow--col">
-                <span className="mrow__label">Text size</span>
-                <div className="seg" role="group" aria-label="Text size">
-                  {SIZES.map((sz, i) => (
-                    <button key={i} type="button" aria-pressed={size === i} aria-label={`Text size ${i + 1} of ${SIZES.length}`} onClick={() => setSize(i)} style={{ fontSize: `${0.85 + i * 0.18}rem` }}>
-                      A
-                    </button>
-                  ))}
-                </div>
+
+              <div className="mset">
+                <span className="mset__label">Text size</span>
+                <Switch
+                  label="Text size"
+                  value={size}
+                  onChange={setSize}
+                  options={SIZES.map((_, i) => ({ value: i, text: "A", aria: `Text size ${i + 1} of ${SIZES.length}`, style: { fontSize: `${0.85 + i * 0.2}rem` } }))}
+                />
               </div>
             </div>
           )}
@@ -565,13 +583,7 @@ function Chalisa() {
         {paceOpen && (
           <div className="pace" role="dialog" aria-label="Choose a pace" lang="en">
             <p className="pace__title">Choose a pace</p>
-            <div className="seg" role="group" aria-label="Pace">
-              {VERSIONS.map((v) => (
-                <button key={v.id} type="button" aria-pressed={pace === v.id} aria-label={`${v.label} recitation`} onClick={() => startWith(v.id)}>
-                  {v.label}
-                </button>
-              ))}
-            </div>
+            <Switch label="Pace" value={pace} onChange={startWith} options={VERSIONS.map((v) => ({ value: v.id, text: v.label, aria: `${v.label} recitation` }))} />
           </div>
         )}
         <button type="button" className="dock__btn dock__btn--turn" onClick={() => readerRef.current && readerRef.current.prev()} aria-label="Previous verse" title="Previous (←)">
